@@ -1,0 +1,89 @@
+
+    <html>
+    <head>
+        <title>Roblox User Info</title>
+        <style>
+            body { font-family: Arial, sans-serif; }
+            .user { margin-bottom: 20px; border: 1px solid #ddd; padding: 10px; }
+            .user img { width: 100px; height: 100px; float: left; margin-right: 10px; }
+            .user-info { margin-left: 120px; }
+            .mutuals { margin-top: 10px; }
+            a { color: #0066cc; text-decoration: none; }
+            a:hover { text-decoration: underline; }
+            #search-bar { margin-bottom: 20px; }
+            #search-input { width: 300px; padding: 5px; }
+            #search-button { padding: 5px 10px; }
+        </style>
+        <script>
+            function scrollToUser(userId) {
+                const element = document.getElementById(userId);
+                element.scrollIntoView({behavior: "smooth", block: "start"});
+            }
+            function searchUsers() {
+                const input = document.getElementById('search-input').value.toLowerCase();
+                const users = document.getElementsByClassName('user');
+                for (let user of users) {
+                    const username = user.getElementsByTagName('h2')[0].textContent.toLowerCase();
+                    if (username.includes(input)) {
+                        user.style.display = '';
+                    } else {
+                        user.style.display = 'none';
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div id="search-bar">
+            <input type="text" id="search-input" placeholder="Search users...">
+            <button id="search-button" onclick="searchUsers()">Search</button>
+        </div>
+    
+        <div class="user" id="1">
+            <img src="https://tr.rbxcdn.com/30DAY-Avatar-310966282D3529E36976BF6B07B1DC90-Png/720/720/Avatar/Png/noFilter" alt="Roblox">
+            <div class="user-info">
+                <h2><a href="https://www.roblox.com/users/1/profile" target="_blank">Roblox</a></h2>
+                <p>Display: Roblox</p>
+                <p>Status: 🔴 Offline</p>
+                <p>Last Online: 2006-02-27 21:06</p>
+                <div class="mutuals">
+                    <h3>Mutual friends:</h3>
+                    <ul>
+        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="user" id="724054979">
+            <img src="https://tr.rbxcdn.com/30DAY-Avatar-AF703949B5E2CC45AE1A19D07C496989-Png/720/720/Avatar/Png/noFilter" alt="Nexoyxyz">
+            <div class="user-info">
+                <h2><a href="https://www.roblox.com/users/724054979/profile" target="_blank">Nexoyxyz</a></h2>
+                <p>Display: Positive</p>
+                <p>Status: 🔴 Offline</p>
+                <p>Last Online: 1 hours ago</p>
+                <div class="mutuals">
+                    <h3>Mutual friends:</h3>
+                    <ul>
+        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="user" id="709052">
+            <img src="https://tr.rbxcdn.com/30DAY-Avatar-211CF00C653B3D32C77C4AC015F708F2-Png/720/720/Avatar/Png/noFilter" alt="bonker">
+            <div class="user-info">
+                <h2><a href="https://www.roblox.com/users/709052/profile" target="_blank">bonker</a></h2>
+                <p>Display: bonker</p>
+                <p>Status: 🔴 Offline</p>
+                <p>Last Online: 2008-07-24 00:56</p>
+                <div class="mutuals">
+                    <h3>Mutual friends:</h3>
+                    <ul>
+        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        </body></html>
