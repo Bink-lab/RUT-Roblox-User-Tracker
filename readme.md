@@ -13,7 +13,6 @@ A simple Python script to retrieve and display detailed Roblox user information 
   - Username lookup
   - Display name
   - Online status
-  - Last seen time
   - Thumbnail image
   - Mutual friends detection
 
