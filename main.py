@@ -235,66 +235,422 @@ def generate_html(user_data, presence_data, thumbnails, mutuals):
     <html>
     <head>
         <title>Roblox User Info</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
-            body { font-family: Arial, sans-serif; }
-            .user { margin-bottom: 20px; border: 1px solid #ddd; padding: 10px; }
-            .user img { width: 100px; height: 100px; float: left; margin-right: 10px; }
-            .user-info { margin-left: 120px; }
-            .mutuals { margin-top: 10px; }
-            a { color: #0066cc; text-decoration: none; }
-            a:hover { text-decoration: underline; }
-            #search-bar { margin-bottom: 20px; }
-            #search-input { width: 300px; padding: 5px; }
-            #search-button { padding: 5px 10px; }
+            :root {
+                --background-color: white;
+                --text-color: #333;
+                --card-bg: white;
+                --card-border: #ddd;
+                --offline-color: #ff6b6b;
+                --website-color: #4dabf7;
+                --ingame-color: #51cf66;
+                --accent-color: #339af0;
+                --btn-text-color: #333; /* Added for button text color */
+            }
+            
+            body {
+                font-family: 'Segoe UI', Arial, sans-serif;
+                margin: 0;
+                padding: 20px;
+                background-color: var(--background-color);
+                color: var(--text-color);
+                transition: all 0.3s ease;
+            }
+            
+            .dark-mode {
+                --background-color: #1a1a1a;
+                --text-color: #f0f0f0;
+                --card-bg: #2d2d2d;
+                --card-border: #444;
+                --offline-color: #c92a2a;
+                --website-color: #1c7ed6;
+                --ingame-color: #2b8a3e;
+                --accent-color: #1864ab;
+                --btn-text-color: #f0f0f0; /* Added for button text color in dark mode */
+            }
+            
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+            
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 1px solid var(--card-border);
+                flex-wrap: wrap;
+            }
+            
+            .controls {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 20px;
+                flex-wrap: wrap;
+            }
+            
+            #search-input {
+                padding: 8px 12px;
+                border: 1px solid var(--card-border);
+                border-radius: 4px;
+                flex-grow: 1;
+                min-width: 200px;
+                background-color: var(--card-bg);
+                color: var(--text-color);
+            }
+            
+            button {
+                padding: 8px 15px;
+                background-color: var(--accent-color);
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.2s;
+            }
+            
+            button:hover {
+                background-color: #2174c7;
+            }
+            
+            .stats {
+                margin-bottom: 20px;
+                padding: 10px;
+                background-color: var(--card-bg);
+                border: 1px solid var(--card-border);
+                border-radius: 4px;
+                display: flex;
+                gap: 15px;
+                flex-wrap: wrap;
+            }
+            
+            .stat-item {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+            
+            .status-dot {
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                display: inline-block;
+            }
+            
+            .offline { background-color: var(--offline-color); }
+            .website { background-color: var(--website-color); }
+            .ingame { background-color: var(--ingame-color); }
+            
+            .user-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+                gap: 20px;
+            }
+            
+            .user {
+                background-color: var(--card-bg);
+                border: 1px solid var(--card-border);
+                border-radius: 8px;
+                padding: 15px;
+                transition: transform 0.2s, box-shadow 0.2s;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .user:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            }
+            
+            .status-indicator {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 5px;
+            }
+            
+            .status-Offline { background-color: var(--offline-color); }
+            .status-Website { background-color: var(--website-color); }
+            .status-In-Game { background-color: var(--ingame-color); }
+            
+            .user-header {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                padding-top: 5px;
+            }
+            
+            .user img {
+                width: 70px;
+                height: 70px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+            
+            .user-name h2 {
+                margin: 0;
+                font-size: 18px;
+            }
+            
+            .user-name p {
+                margin: 5px 0;
+                color: #888;
+            }
+            
+            .user-details {
+                margin-top: 15px;
+            }
+            
+            .mutuals {
+                margin-top: 15px;
+            }
+            
+            .mutuals h3 {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+            
+            .mutuals ul {
+                max-height: 150px;
+                overflow-y: auto;
+                padding-left: 20px;
+                margin: 0;
+            }
+            
+            .mutuals li {
+                margin-bottom: 5px;
+            }
+            
+            .filter-buttons {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+            
+            .filter-btn {
+                padding: 5px 10px;
+                border-radius: 20px;
+                background-color: var(--card-bg);
+                border: 1px solid var(--card-border);
+                cursor: pointer;
+                color: var(--btn-text-color); /* Added to ensure text visibility */
+                font-weight: bold; /* Make text more readable */
+            }
+            
+            .filter-btn.active {
+                background-color: var(--accent-color);
+                color: white; /* Keeps active button text white for contrast */
+            }
+            
+            .toggle-theme {
+                background-color: transparent;
+                color: var(--text-color);
+                border: 1px solid var(--card-border);
+            }
+            
+            .timestamp {
+                margin-top: 20px;
+                text-align: center;
+                font-size: 14px;
+                color: #888;
+            }
+            
+            @media (max-width: 600px) {
+                .user-grid {
+                    grid-template-columns: 1fr;
+                }
+                .header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+                .controls {
+                    width: 100%;
+                }
+            }
         </style>
         <script>
             function scrollToUser(userId) {
                 const element = document.getElementById(userId);
                 element.scrollIntoView({behavior: "smooth", block: "start"});
+                // Highlight the user card briefly
+                element.style.boxShadow = '0 0 0 3px var(--accent-color)';
+                setTimeout(() => {
+                    element.style.boxShadow = '';
+                }, 2000);
             }
+            
             function searchUsers() {
                 const input = document.getElementById('search-input').value.toLowerCase();
                 const users = document.getElementsByClassName('user');
+                let visible = 0;
+                
                 for (let user of users) {
-                    const username = user.getElementsByTagName('h2')[0].textContent.toLowerCase();
-                    if (username.includes(input)) {
+                    const username = user.querySelector('.user-name h2').textContent.toLowerCase();
+                    const displayName = user.querySelector('.display-name').textContent.toLowerCase();
+                    const mutuals = user.querySelector('.mutuals').textContent.toLowerCase();
+                    
+                    if (username.includes(input) || displayName.includes(input) || mutuals.includes(input)) {
                         user.style.display = '';
+                        visible++;
                     } else {
                         user.style.display = 'none';
                     }
                 }
+                
+                document.getElementById('visible-count').textContent = visible;
+            }
+            
+            function filterByStatus(status) {
+                const users = document.getElementsByClassName('user');
+                const buttons = document.getElementsByClassName('filter-btn');
+                let visible = 0;
+                
+                // Update active button
+                for (let btn of buttons) {
+                    btn.classList.remove('active');
+                }
+                document.getElementById('btn-' + status).classList.add('active');
+                
+                for (let user of users) {
+                    if (status === 'all') {
+                        user.style.display = '';
+                        visible++;
+                    } else {
+                        const userStatus = user.getAttribute('data-status');
+                        if (userStatus === status) {
+                            user.style.display = '';
+                            visible++;
+                        } else {
+                            user.style.display = 'none';
+                        }
+                    }
+                }
+                
+                document.getElementById('visible-count').textContent = visible;
+            }
+            
+            function toggleTheme() {
+                document.body.classList.toggle('dark-mode');
+                const button = document.getElementById('theme-toggle');
+                if (document.body.classList.contains('dark-mode')) {
+                    button.textContent = '☀️ Light Mode';
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    button.textContent = '🌙 Dark Mode';
+                    localStorage.setItem('theme', 'light');
+                }
+            }
+            
+            // Apply saved theme when page loads
+            window.onload = function() {
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme === 'dark') {
+                    document.body.classList.add('dark-mode');
+                    document.getElementById('theme-toggle').textContent = '☀️ Light Mode';
+                }
+                
+                // Set initial stats
+                document.getElementById('total-count').textContent = document.getElementsByClassName('user').length;
+                document.getElementById('visible-count').textContent = document.getElementsByClassName('user').length;
+                
+                const offlineUsers = document.querySelectorAll('[data-status="Offline"]').length;
+                const websiteUsers = document.querySelectorAll('[data-status="Website"]').length;
+                const ingameUsers = document.querySelectorAll('[data-status="In-Game"]').length;
+                
+                document.getElementById('offline-count').textContent = offlineUsers;
+                document.getElementById('website-count').textContent = websiteUsers;
+                document.getElementById('ingame-count').textContent = ingameUsers;
+                
+                // Add event listener for Enter key in search box
+                document.getElementById('search-input').addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') {
+                        searchUsers();
+                        event.preventDefault();
+                    }
+                });
             }
         </script>
     </head>
     <body>
-        <div id="search-bar">
-            <input type="text" id="search-input" placeholder="Search users...">
-            <button id="search-button" onclick="searchUsers()">Search</button>
-        </div>
+        <div class="container">
+            <div class="header">
+                <h1>Roblox User Tracker</h1>
+                <button id="theme-toggle" class="toggle-theme" onclick="toggleTheme()">🌙 Dark Mode</button>
+            </div>
+            
+            <div class="controls">
+                <input type="text" id="search-input" placeholder="Search users, display names, or mutual friends...">
+                <button onclick="searchUsers()">Search</button>
+            </div>
+            
+            <div class="filter-buttons">
+                <button id="btn-all" class="filter-btn active" onclick="filterByStatus('all')">All Users</button>
+                <button id="btn-In-Game" class="filter-btn" onclick="filterByStatus('In-Game')">In-Game</button>
+                <button id="btn-Website" class="filter-btn" onclick="filterByStatus('Website')">On Website</button>
+                <button id="btn-Offline" class="filter-btn" onclick="filterByStatus('Offline')">Offline</button>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-item">Total: <span id="total-count">0</span></div>
+                <div class="stat-item">Visible: <span id="visible-count">0</span></div>
+                <div class="stat-item"><span class="status-dot ingame"></span> In-Game: <span id="ingame-count">0</span></div>
+                <div class="stat-item"><span class="status-dot website"></span> Website: <span id="website-count">0</span></div>
+                <div class="stat-item"><span class="status-dot offline"></span> Offline: <span id="offline-count">0</span></div>
+            </div>
+            
+            <div class="user-grid">
     """
+    
     for username, data in user_data.items():
         user_id = data["id"]
         presence = presence_data.get(user_id, {"status": "Unknown", "emoji": "❓"})
+        status_class = f"status-{presence['status']}"
+        
         html += f"""
-        <div class="user" id="{user_id}">
-            <img src="{thumbnails[user_id]}" alt="{username}">
-            <div class="user-info">
-                <h2><a href="https://www.roblox.com/users/{user_id}/profile" target="_blank">{username}</a></h2>
-                <p>Display: {data['display_name']}</p>
-                <p>Status: {presence['emoji']} {presence['status']}</p>
-                <div class="mutuals">
-                    <h3>Mutual friends:</h3>
-                    <ul>
-        """
-        for friend in mutuals[user_id]:
-            html += f'<li><a href="javascript:scrollToUser({friend["id"]})">{friend["name"]}</a> - {friend["id"]}</li>'
-        html += """
-                    </ul>
+        <div class="user" id="{user_id}" data-status="{presence['status']}">
+            <div class="status-indicator {status_class}"></div>
+            <div class="user-header">
+                <img src="{thumbnails[user_id]}" alt="{username}">
+                <div class="user-name">
+                    <h2><a href="https://www.roblox.com/users/{user_id}/profile" target="_blank">{username}</a></h2>
+                    <p class="display-name">{data['display_name']}</p>
                 </div>
+            </div>
+            <div class="user-details">
+                <p>Status: {presence['emoji']} {presence['status']}</p>
+                <p>User ID: {user_id}</p>
+            </div>
+            <div class="mutuals">
+                <h3>Mutual friends ({len(mutuals[user_id])})</h3>
+        """
+        
+        if mutuals[user_id]:
+            html += "<ul>"
+            for friend in mutuals[user_id]:
+                html += f'<li><a href="javascript:scrollToUser({friend["id"]})">{friend["name"]}</a></li>'
+            html += "</ul>"
+        else:
+            html += "<p>No mutual friends</p>"
+            
+        html += """
             </div>
         </div>
         """
-    html += "</body></html>"
+    
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S")
+    html += f"""
+            </div>
+            <div class="timestamp">
+                Data generated on {current_time}
+            </div>
+        </div>
+    </body>
+    </html>
+    """
     
     with open(filename, "w", encoding="utf-8") as f:
         f.write(html)
